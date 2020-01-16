@@ -1,45 +1,28 @@
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
-import { Operation, ApolloLink, Observable } from "apollo-link";
+import { Operation, ApolloLink, concat } from "apollo-link";
 import { withClientState } from "apollo-link-state";
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
   uri: "http://localhost:4000/graphql",
-  credentials: "include"
+  //credentials:'include'
+
 });
 
-const request = async (operation: Operation) => {
-  operation.setContext({
-    headers: {
-      token: localStorage.getItem("token") || ""
-    }
-  });
-};
 
 const requestLink = new ApolloLink(
-  (operation, forward) =>
-    new Observable(observer => {
-      let handle: any;
-      Promise.resolve(operation)
-        .then(oper => request(oper))
-        .then(() => {
-          handle = forward(operation).subscribe({
-            next: observer.next.bind(observer),
-            error: observer.error.bind(observer),
-            complete: observer.complete.bind(observer)
-          });
-        })
-        .catch(observer.error.bind(observer));
-
-      return () => {
-        if (handle) handle.unsubscribe();
-      };
+  (operation:Operation, forward) => {
+    operation.setContext({
+      headers: {
+        token: localStorage.getItem("token") || ""
+      }
     })
-);
+    return forward(operation)
+  });
 
-const clientState = withClientState({
+const localLinkState = withClientState({
   defaults: {
     auth: {
       __typename: "Auth",
@@ -75,8 +58,33 @@ const clientState = withClientState({
 });
 
 const client = new ApolloClient({
-  link: ApolloLink.from([requestLink, link, clientState]),
-  cache
+  link: ApolloLink.from([localLinkState, concat(requestLink, link)]),
+  resolvers: {
+    Mutation: {
+      logUserOut: (_, __, { cache }) => {
+        localStorage.removeItem("token");
+        cache.writeData({
+          data: {
+            __typename: "Auth",
+            isLoggedIn: false
+          }
+        });
+
+        return null;
+      },
+      logUserIn: (_, { token }, { cache }) => {
+        localStorage.setItem("token", token);
+        cache.writeData({
+          data: {
+            __typename: "Auth",
+            isLoggedIn: true
+          }
+        });
+        return null;
+      }
+    }
+  },
+  cache,
 });
 
 export default client;
