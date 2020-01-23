@@ -1,12 +1,22 @@
-import { DefaultTheme } from "styled-components";
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
 
-const theme: DefaultTheme = {
-    colors: {
-        main : '#3498db',
-        secondary: '#7f8c8d'
+let theme = createMuiTheme({
+    palette: {
+        primary : {
+            main: '#000000'
+        },
+        secondary : {
+            main : '#FFFFFF'
+        }
+
+    },
+    typography:{
+        fontFamily: '"Exo", "Roboto", "Helvetica", "Arial", "sans-serif"'
+
     }
-}
+})
 
+theme = responsiveFontSizes(theme);
 
-export { theme }
+export default theme
