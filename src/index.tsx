@@ -2,17 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 import client from "./client";
 import { ApolloProvider } from "@apollo/react-hooks";
+import {MuiThemeProvider } from "@material-ui/core"
 import App from "./App";
-import { ThemeProvider } from "styled-components";
-import { theme } from "./theme";
-import { GlobalStyle } from './global-styles';
+import "typeface-roboto";
+import theme from "./theme";
+
+
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
+    <MuiThemeProvider theme={theme}>
       <App />
-    </ThemeProvider>
+    </MuiThemeProvider>
   </ApolloProvider>,
   document.getElementById("root")
 );
