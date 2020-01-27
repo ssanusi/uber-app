@@ -7,7 +7,7 @@ import App from "./App";
 import "typeface-roboto";
 import theme from "./theme";
 
-console.log(theme);
+
 
 ReactDOM.render(
   <ApolloProvider client={client}>

@@ -1,16 +1,17 @@
-import React from 'react'
-import Header from '../../Layout/Header'
+import React from "react";
+import Header from "../../Layout/Header";
+import Main from "../../Layout/Main";
 
-interface Props {
 
-}
+interface Props {}
 
 const UnAuthenticatedHomePage: React.FC<Props> = () => {
-    return (
-        <div>
-          <Header />
-        </div>
-    )
-}
+  return (
+    <div>
+        <Header />
+        <Main />
+    </div>
+  );
+};
 
-export default UnAuthenticatedHomePage
+export default UnAuthenticatedHomePage;

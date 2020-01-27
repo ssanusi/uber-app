@@ -12,7 +12,8 @@ let theme = createMuiTheme({
 
     },
     typography:{
-        fontFamily: '"Exo", "Roboto", "Helvetica", "Arial", "sans-serif"'
+        fontFamily: '"sans-serif"',
+        fontWeightRegular: "normal"
 
     }
 })
